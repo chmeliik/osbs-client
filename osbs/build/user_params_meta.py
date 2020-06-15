@@ -31,7 +31,7 @@ class BuildParam(object):
     class creation.
     """
 
-    def __init__(self, name, default=None, required=False, include_in_json=True):
+    def __init__(self, name, default=None, required=False):
         """
         Define a BuildParam.
 
@@ -41,12 +41,10 @@ class BuildParam(object):
         :param name: str, name of param, should match name of class attribute
         :param default: any immutable object, default value of param
         :param required: bool, is the param allowed to be None?
-        :param include_in_json: bool, include the param in to_json() output?
         """
         self._name = name
         self._default = default
         self._required = required
-        self._include_in_json = include_in_json
         self._mangled_name = "_{self.__class__.__name__}__{self.name}".format(self=self)
 
     @property
@@ -56,10 +54,6 @@ class BuildParam(object):
     @property
     def required(self):
         return self._required
-
-    @property
-    def include_in_json(self):
-        return self._include_in_json
 
     def __repr__(self):
         return "{self.__class__.__name__}({self.name!r})".format(self=self)

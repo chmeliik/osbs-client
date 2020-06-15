@@ -21,26 +21,23 @@ class TestBuildParam(object):
     """
 
     def check_basic_properties(self, param, name, mangled_name, repr_s,
-                               default=None, required=False, include_in_json=True):
+                               default=None, required=False):
         assert param.name == name
         assert param.required == required
-        assert param.include_in_json == include_in_json
         assert param._default == default
         assert param._mangled_name == mangled_name
         assert repr(param) == repr_s
 
     @pytest.mark.parametrize("default", [None, "some"])
     @pytest.mark.parametrize("required", [True, False])
-    @pytest.mark.parametrize("include_in_json", [True, False])
-    def test_build_param(self, default, required, include_in_json):
-        bp = BuildParam("bp", default=default, required=required, include_in_json=include_in_json)
+    def test_build_param(self, default, required):
+        bp = BuildParam("bp", default=default, required=required)
         self.check_basic_properties(bp,
                                     name="bp",
                                     mangled_name="_BuildParam__bp",
                                     repr_s="BuildParam({!r})".format("bp"),
                                     default=default,
-                                    required=required,
-                                    include_in_json=include_in_json)
+                                    required=required)
 
     def test_build_param_subclassing(self):
         class CustomParam(BuildParam):

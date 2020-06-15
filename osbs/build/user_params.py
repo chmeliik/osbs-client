@@ -265,7 +265,7 @@ class BuildCommon(BuildParamsBase):
         return retdict
 
     def to_json(self):
-        keys = (p.name for p in self.__class__.params if p.include_in_json)
+        keys = list(self.__class__.params_dict)
         json_dict = self.to_dict(keys)
         json_dict[KIND_KEY] = self.KIND
         return json.dumps(json_dict, sort_keys=True)
@@ -309,17 +309,11 @@ class BuildUserParams(BuildCommon):
     triggered_after_koji_task = BuildParam("triggered_after_koji_task")
     yum_repourls = BuildParam("yum_repourls")
 
-    # TODO: see if these can be allowed to appear in JSON
-    auto_build_node_selector = BuildParam("auto_build_node_selector",
-                                          include_in_json=False)
-    explicit_build_node_selector = BuildParam("explicit_build_node_selector",
-                                              include_in_json=False)
-    isolated_build_node_selector = BuildParam("isolated_build_node_selector",
-                                              include_in_json=False)
-    platform_node_selector = BuildParam("platform_node_selector",
-                                        include_in_json=False)
-    scratch_build_node_selector = BuildParam("scratch_build_node_selector",
-                                             include_in_json=False)
+    auto_build_node_selector = BuildParam("auto_build_node_selector")
+    explicit_build_node_selector = BuildParam("explicit_build_node_selector")
+    isolated_build_node_selector = BuildParam("isolated_build_node_selector")
+    platform_node_selector = BuildParam("platform_node_selector")
+    scratch_build_node_selector = BuildParam("scratch_build_node_selector")
 
     @classmethod
     def make_params(cls,
