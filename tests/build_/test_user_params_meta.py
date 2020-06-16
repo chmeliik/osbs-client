@@ -31,13 +31,19 @@ class TestBuildParam(object):
     @pytest.mark.parametrize("default", [None, "some"])
     @pytest.mark.parametrize("required", [True, False])
     def test_build_param(self, default, required):
-        bp = BuildParam("bp", default=default, required=required)
-        self.check_basic_properties(bp,
-                                    name="bp",
-                                    mangled_name="_BuildParam__bp",
-                                    repr_s="BuildParam({!r})".format("bp"),
-                                    default=default,
-                                    required=required)
+        if default is not None and required:
+            with pytest.raises(ValueError) as exc_info:
+                BuildParam("bp", default=default, required=required)
+            err_msg = "Required param {!r} cannot have default value".format("bp")
+            assert str(exc_info.value) == err_msg
+        else:
+            bp = BuildParam("bp", default=default, required=required)
+            self.check_basic_properties(bp,
+                                        name="bp",
+                                        mangled_name="_BuildParam__bp",
+                                        repr_s="BuildParam({!r})".format("bp"),
+                                        default=default,
+                                        required=required)
 
     def test_build_param_subclassing(self):
         class CustomParam(BuildParam):
@@ -59,8 +65,13 @@ class TestBuildParam(object):
         assert not hasattr(obj, "_BuildParam__bp")
 
         bp.__set__(obj, value)
-        assert bp.__get__(obj) == value
-        assert obj._BuildParam__bp == value
+        if value is None:
+            # setting param to None should not overwrite default value
+            assert bp.__get__(obj) == default
+            assert not hasattr(obj, "_BuildParam__bp")
+        else:
+            assert bp.__get__(obj) == value
+            assert obj._BuildParam__bp == value
 
 
 class TestBuildParamsBase(object):

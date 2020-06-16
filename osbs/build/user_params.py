@@ -286,7 +286,7 @@ class BuildUserParams(BuildCommon):
     flatpak = BuildParam("flatpak", default=False)
     git_branch = BuildParam("git_branch")
     git_commit_depth = BuildParam("git_commit_depth")
-    git_ref = BuildParam("git_ref", default=DEFAULT_GIT_REF, required=True)
+    git_ref = BuildParam("git_ref", default=DEFAULT_GIT_REF)
     git_uri = BuildParam("git_uri", required=True)
     imagestream_name = BuildParam("imagestream_name")
     include_koji_repo = BuildParam("include_koji_repo", default=False)

@@ -42,6 +42,8 @@ class BuildParam(object):
         :param default: any immutable object, default value of param
         :param required: bool, is the param allowed to be None?
         """
+        if required and default is not None:
+            raise ValueError("Required param {!r} cannot have default value".format(name))
         self._name = name
         self._default = default
         self._required = required
@@ -59,6 +61,9 @@ class BuildParam(object):
         return "{self.__class__.__name__}({self.name!r})".format(self=self)
 
     def __get__(self, obj, objtype=None):
+        """
+        Get param value, if param is not set, return default value
+        """
         try:
             # Bypass potential __getattr__ redefinition in class
             return object.__getattribute__(obj, self._mangled_name)
@@ -66,8 +71,12 @@ class BuildParam(object):
             return self._default
 
     def __set__(self, obj, value):
-        # Bypass potential __setattr__ redefinition in class
-        object.__setattr__(obj, self._mangled_name, value)
+        """
+        Set param if value is not None (None means param is not set)
+        """
+        if value is not None:
+            # Bypass potential __setattr__ redefinition in class
+            object.__setattr__(obj, self._mangled_name, value)
 
 
 class BuildParamsMeta(type):
